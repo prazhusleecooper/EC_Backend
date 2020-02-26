@@ -20,14 +20,33 @@ module.exports.routes = {
   ***************************************************************************/
 
   '/': { view: 'pages/homepage' },
+  /* ITEMS */
+  //Getting all the items for the homepage
   'GET /items': 'EcomController.getAllItems',
+  //Creating a new item
   'POST /create': 'EcomController.createItem',
-  'POST /createCategory': 'CategoriesController.createCategory',
-  'GET /categories': 'CategoriesController.getAllCategories',
+  //Reduce the quantity of the  stock
   'PATCH /delUnits': 'EcomController.deleteUnits',
+
+  /*CATEGORIES*/
+  //Creating a new category
+  'POST /createCategory': 'CategoriesController.createCategory',
+  //Getting all the categories
+  'GET /categories': 'CategoriesController.getAllCategories',
+
+  /* USERS */
+  //Creating a user
+  'POST /createuser': 'UsersController.createUser',
+  //Get all users
+  'GET /getusers': 'UsersController.getAllUsers',
+  //Get one user
+  'GET /getuser/:userId': 'UsersController.getUser',
+  //User login
+  'POST /userlogin': 'UsersController.userLogin',
+
+  /* SAMPLE */
+  //Sample hit
   'GET /sample': 'EcomController.sample',
-
-
   /***************************************************************************
   *                                                                          *
   * More custom routes here...                                               *

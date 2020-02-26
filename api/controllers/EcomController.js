@@ -5,6 +5,8 @@
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
 
+var jwt = require('jsonwebtoken');
+
 module.exports = {
   // Getting all the items for the home page
   getAllItems: async (req, res) => {
@@ -26,7 +28,7 @@ module.exports = {
       category: req.body.category,
       quantity: req.body.quantity,
       total_price: req.body.total_price,
-      quantity_available: req.body.quantity_available
+      totalQuantity: req.body.totalQuantity
     }).exec((err) => {
       if(err) {
         console.log('ERROR CREATING::',err);
@@ -56,7 +58,8 @@ module.exports = {
   sample: (req, res) => {
     try {
       console.log('SAMPLE HIT');
-      res.ok('SAMPLE HIT');
+      var token = jwt.sign({sub:'samplerrrrrrr', email: 'loller@gmail.com'}, sails.config.session.secret, {expiresIn: '24h'});
+      res.json(200, {token: token});
     } catch(err) {
       console.log('SAMPLE HIT FAILED::', err);
     }
