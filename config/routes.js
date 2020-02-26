@@ -43,6 +43,8 @@ module.exports.routes = {
   'GET /getuser/:userId': 'UsersController.getUser',
   //User login
   'POST /userlogin': 'UsersController.userLogin',
+  //Update user cart items
+  'PATCH /savecart': 'UsersController.saveCartItems',
 
   /* SAMPLE */
   //Sample hit

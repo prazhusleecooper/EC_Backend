@@ -59,7 +59,7 @@ module.exports = {
     try {
       console.log('SAMPLE HIT');
       var token = jwt.sign({sub:'samplerrrrrrr', email: 'loller@gmail.com'}, sails.config.session.secret, {expiresIn: '24h'});
-      res.json(200, {token: token});
+      res.status(200).json({token: token});
     } catch(err) {
       console.log('SAMPLE HIT FAILED::', err);
     }

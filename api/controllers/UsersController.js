@@ -8,6 +8,7 @@
 var jwt = require('jsonwebtoken');
 
 module.exports = {
+  //Create a new user
   createUser: (req, res) => {
     console.log('REQUEST BODY::',req.body);
     Users.create({
@@ -23,6 +24,7 @@ module.exports = {
     });
   },
 
+  //Retrieve all the users
   getAllUsers: async (req, res) => {
     try {
       let usersList = await Users.find();
@@ -32,6 +34,7 @@ module.exports = {
     }
   },
 
+  //Retrieve a particular user
   getUser: async (req, res) => {
     try {
       let user = await Users.findOne({
@@ -80,6 +83,7 @@ module.exports = {
         message: 'user email and password are valid',
         code: 1,
         provider: 'EC_1',
+        cartItems: JSON.stringify(user.cartItems),
       });
     } else if(user.password !== req.body.password) {
       return res.status(406).send({
@@ -91,6 +95,24 @@ module.exports = {
       });
     }
 
-  }
-};
+  },
 
+  //Save the cart items
+  saveCartItems: async (req, res) => {
+    sails.log('save cart items HIT');
+    sails.log('THE not  PARSED CART ITEMS IS:::', req.body.cartItems);
+    sails.log('THE PARSED CART ITEMS IS:::', JSON.parse(req.body.cartItems));
+    let cartItems = JSON.parse(req.body.cartItems);
+    try {
+      let newCartItems = {
+        cartItems: cartItems
+      };
+      let result = await Users.update({email: req.body.email}, newCartItems);
+      sails.log("_____________________________________________________");
+      res.ok('ITEMS UPDATED');
+    } catch(error) {
+      console.log('error saving cart items::', error);
+      return res.serverError(error);
+    }
+  },
+};
