@@ -9,25 +9,65 @@ var jwt = require('jsonwebtoken');
 
 module.exports = {
   //Create a new user
-  createUser: (req, res) => {
-    console.log('REQUEST BODY::',req.body);
-    Users.create({
-      userId: req.body.userId,
-      email: req.body.email,
-      password: req.body.password
-    }).exec((error) => {
-      if(error) {
-        console.log('ERROR CREATING USER::', error);
-        return res.status(500).send('ERROR CREATING USER',error);
+  /*
+  * Signup status codes:
+  *   1: Signup successful(email does not exist)
+  *  -1: email already exists - signup unsuccessful
+  * */
+  createUser: async (req, res) => {
+    let usersList = await Users.find().sort('userId DESC');
+    let userId = 0;
+    let flag = 0;
+    if(usersList.length > 0) {
+      usersList.map(user => {
+        if(user.email === req.body.email) {
+          flag = 1;
+        }
+      });
+    } else if(usersList.length === 0){
+      userId = 1;
+    }
+    if(usersList.length !== 0 && flag === 0) {
+      userId = usersList[0].userId + 1;
+    }
+    sails.log('FIN USER ID::', userId);
+    sails.log('INTENDED USER ID::', usersList[0].userId + 1);
+    if(flag === 1) {
+      res.status(406).send({
+        status: 406,
+        code: -1,
+        message: 'Email already exists',
+      });
+    } else {
+      try {
+        await Users.create({
+          userId: userId,
+          email: req.body.email,
+          password: req.body.password,
+          cartItems: [],
+        });
+        sails.log('CREATION SUCC');
+        return res.ok({
+          status: 200,
+          code: 1,
+          message: 'Signup successful',
+        });
+      } catch (error) {
+        sails.log('CREATION ERR', error);
+        return res.status(500).send({
+          status: 500,
+          code: 0,
+          message: 'Signup usuccessful, user has not been created',
+        });
       }
-      return res.ok('USER CREATED');
-    });
+    }
   },
 
   //Retrieve all the users
   getAllUsers: async (req, res) => {
     try {
-      let usersList = await Users.find();
+      let usersList = await Users.find().sort("userId DESC");
+      sails.log('USERSLIST::', usersList);
       return res.status(302).send(usersList);
     } catch (error) {
       return res.serverError(error);
@@ -63,6 +103,7 @@ module.exports = {
     });
     let jwtPayoad = {
       email: req.body.email,
+      userId: user.userId,
       validity: 'one hour',
       userRole: 1,
       provider: 'EC_1',
@@ -107,12 +148,18 @@ module.exports = {
       let newCartItems = {
         cartItems: cartItems
       };
-      let result = await Users.update({email: req.body.email}, newCartItems);
-      sails.log("_____________________________________________________");
+      let result = await Users.update({userId: req.body.userId}, newCartItems);
+      sails.log('_____________________________________________________');
       res.ok('ITEMS UPDATED');
     } catch(error) {
       console.log('error saving cart items::', error);
       return res.serverError(error);
     }
+  },
+
+  sortHit: async (req, res) => {
+    let myQuery = await Users.find().sort({userId: -1});
+    sails.log('SORTING::', myQuery[0].userId);
+    res.ok("YOIO");
   },
 };

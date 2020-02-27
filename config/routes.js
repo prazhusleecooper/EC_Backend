@@ -45,6 +45,8 @@ module.exports.routes = {
   'POST /userlogin': 'UsersController.userLogin',
   //Update user cart items
   'PATCH /savecart': 'UsersController.saveCartItems',
+  //SORT HiT
+  'GET /sort': 'UsersController.sortHit',
 
   /* SAMPLE */
   //Sample hit
