@@ -6,6 +6,7 @@
  */
 
 var jwt = require('jsonwebtoken');
+var bcrypt = require('bcrypt');
 
 module.exports = {
   //Create a new user
@@ -15,6 +16,7 @@ module.exports = {
   *  -1: email already exists - signup unsuccessful
   * */
   createUser: async (req, res) => {
+    // console.log("THE SYNC HASH IS", hash);
     let usersList = await Users.find().sort('userId DESC');
     let userId = 0;
     let flag = 0;
@@ -39,11 +41,12 @@ module.exports = {
         message: 'Email already exists',
       });
     } else {
+      let hash = await bcrypt.hashSync(req.body.password, 10);
       try {
         await Users.create({
           userId: userId,
           email: req.body.email,
-          password: req.body.password,
+          password: hash,
           cartItems: [],
         });
         sails.log('CREATION SUCC');
@@ -117,7 +120,7 @@ module.exports = {
         code: -1,
         provider: 'EC_1',
       });
-    } else if(user.password === req.body.password){
+    } else if(bcrypt.compare(req.body.password, user.password)){
       return res.ok({
         status: 200,
         token: jwtToken,
