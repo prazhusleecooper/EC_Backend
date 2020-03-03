@@ -27,6 +27,10 @@ module.exports.routes = {
   'POST /create': 'EcomController.createItem',
   //Reduce the quantity of the  stock
   'PATCH /delUnits': 'EcomController.deleteUnits',
+  //Update item
+  'PATCH /updateItem': 'EcomController.updateItem',
+  //Delete item
+  'DELETE /deleteItem': 'EcomController.deleteItem',
 
   /*CATEGORIES*/
   //Creating a new category
@@ -45,12 +49,14 @@ module.exports.routes = {
   'POST /userlogin': 'UsersController.userLogin',
   //Update user cart items
   'PATCH /savecart': 'UsersController.saveCartItems',
+  //Delete user
+  'DELETE /deleteUser': 'UsersController.deleteUser',
   //SORT HiT
   'GET /sort': 'UsersController.sortHit',
 
   /* SAMPLE */
   //Sample hit
-  'GET /sample': 'EcomController.sample',
+  'POST /sample': 'EcomController.sample',
   /***************************************************************************
   *                                                                          *
   * More custom routes here...                                               *

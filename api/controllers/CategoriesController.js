@@ -24,6 +24,22 @@ module.exports = {
     } catch (err) {
       return res.serverError(err);
     }
-  }
+  },
+
+  categoryVerfication: async (category) => {
+    let checker = await Categories.findOne({ categoryName: category });
+    if(!checker) {
+      try {
+        await Categories.create({
+          categoryName: category
+        });
+        sails.log('ITEM CATEGORY CREATED');
+      } catch (error) {
+        sails.log('ERRoR CREATING CATEGORY', error);
+      }
+    } else {
+      sails.log('Category already available');
+    }
+  },
 };
 

@@ -15,6 +15,14 @@ module.exports = {
   *   1: Signup successful(email does not exist)
   *  -1: email already exists - signup unsuccessful
   * */
+
+  /*
+    * Customer roles:
+    *   1 - Super Admin
+    *   2 - Admin
+    *   3 - Content-editor
+    *   4 - customer
+    * */
   createUser: async (req, res) => {
     // console.log("THE SYNC HASH IS", hash);
     let usersList = await Users.find().sort('userId DESC');
@@ -32,8 +40,6 @@ module.exports = {
     if(usersList.length !== 0 && flag === 0) {
       userId = usersList[0].userId + 1;
     }
-    sails.log('FIN USER ID::', userId);
-    sails.log('INTENDED USER ID::', usersList[0].userId + 1);
     if(flag === 1) {
       res.status(406).send({
         status: 406,
@@ -69,8 +75,7 @@ module.exports = {
   //Retrieve all the users
   getAllUsers: async (req, res) => {
     try {
-      let usersList = await Users.find().sort("userId DESC");
-      sails.log('USERSLIST::', usersList);
+      let usersList = await Users.find().sort("userId ASC");
       return res.status(302).send(usersList);
     } catch (error) {
       return res.serverError(error);
@@ -108,7 +113,7 @@ module.exports = {
       email: req.body.email,
       userId: user.userId,
       validity: 'one hour',
-      userRole: 1,
+      userRole: user.userRole,
       provider: 'EC_1',
     };
     let jwtToken = jwt.sign(jwtPayoad, sails.config.session.secret,{ expiresIn: '1h' });
@@ -156,6 +161,20 @@ module.exports = {
       res.ok('ITEMS UPDATED');
     } catch(error) {
       console.log('error saving cart items::', error);
+      return res.serverError(error);
+    }
+  },
+
+  //Delete user
+  deleteUser: async (req, res) => {
+    console.log('THE DELETION REQ iS::', req.body);
+    try {
+      let deletion = await Users.destroy({
+        userId: req.body.userId
+      });
+      sails.log('data:', deletion);
+      return res.ok(deletion);
+    } catch (error) {
       return res.serverError(error);
     }
   },

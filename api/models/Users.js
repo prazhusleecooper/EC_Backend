@@ -36,6 +36,20 @@ module.exports = {
       columnType: 'array',
       required: false,
       unique: false,
+    },
+
+    /*
+    * Customer roles:
+    *   1 - Super Admin
+    *   2 - Admin
+    *   3 - Content-editor
+    *   4 - customer
+    * */
+    userRole: {
+      type: 'number',
+      required: false,
+      unique: false,
+      defaultsTo: 4
     }
     //  ╔═╗╦═╗╦╔╦╗╦╔╦╗╦╦  ╦╔═╗╔═╗
     //  ╠═╝╠╦╝║║║║║ ║ ║╚╗╔╝║╣ ╚═╗
@@ -56,9 +70,9 @@ module.exports = {
   generateHash: (password) => {
     let saltRounds = 15;
     // eslint-disable-next-line handle-callback-err
-    bcrypt.genSalt(saltRounds, function(err,salt) {
+    bcrypt.genSalt(saltRounds, (err,salt) => {
       // eslint-disable-next-line handle-callback-err
-      bcrypt.hash(req.body.password, salt, function (err, hash) {
+      bcrypt.hash(req.body.password, salt, (err, hash) => {
         sails.log('THE hASHED PASS::', hash);
         return hash;
       });
