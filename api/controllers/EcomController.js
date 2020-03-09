@@ -11,6 +11,7 @@ var categoriesController = require('./CategoriesController');
 module.exports = {
   // Getting all the items for the home page
   getAllItems: async (req, res) => {
+    sails.log("GET ALL ITEMS HIT");
     try {
       let itemsList = await Ecom.find({});
       return res.ok(itemsList);

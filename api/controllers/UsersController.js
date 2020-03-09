@@ -134,7 +134,7 @@ module.exports = {
         provider: 'EC_1',
         cartItems: JSON.stringify(user.cartItems),
       });
-    } else if(user.password !== req.body.password) {
+    } else if(!bcrypt.compare(req.body.password, user.password)) {
       return res.status(406).send({
         status: 406,
         token: null,
