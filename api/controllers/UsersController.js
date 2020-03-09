@@ -6,7 +6,7 @@
  */
 
 var jwt = require('jsonwebtoken');
-var bcrypt = require('bcrypt');
+var bcrypt = require('bcryptjs');
 
 module.exports = {
   //Create a new user
